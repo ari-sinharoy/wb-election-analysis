@@ -1,28 +1,22 @@
-﻿# West Bengal 2026 assembly election sensitivity analysis
+﻿# West Bengal 2026 Assembly Election Sensitivity Analysis
 
-This project builds a constituency-level election modeling pipeline to:
+A constituency-level statistical modeling and simulation framework to analyze electoral outcomes under uncertainty.
 
-- Analyze historical voting patterns
-- Model vote share with small-data ML techniques
-- Run Monte Carlo simulations for seat projections
-- Perform sensitivity analysis to identify swing factors
-- Enable post-election model evaluation
+## Objective
+
+This project focuses on:
+
+- Modeling vote share using limited historical data
+- Running Monte Carlo simulations for seat projections
+- Performing sensitivity analysis to identify key swing factors
+- Enabling post-election error attribution
+
+---
 
 ## Project Structure
 
-data/
-├── raw/        # scraped / original data (Wikipedia, ECI, etc.)
-├── processed/  # cleaned and feature-engineered datasets
-
-notebooks/      # exploratory and modeling notebooks
-
-src/            # reusable scripts (data processing, modeling)
-
-## Current Status
-- [ ] Data scraping pipeline
-- [ ] Data cleaning
-- [ ] Baseline model
-- [ ] Sensitivity analysis
-
-## Tech Stack
-Python, Pandas, Scikit-learn, Monte Carlo Simulation
+- `data/`
+  - `raw/` – original scraped datasets (Wikipedia, ECI)
+  - `processed/` – cleaned and feature-engineered data
+- `notebooks/` – EDA, modeling, analysis
+- `src/` – reusable scripts
