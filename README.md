@@ -126,11 +126,41 @@ notebooks/
 
 ---
 
+## Monte Carlo Simulation Results
+
+We simulate 10,000 elections by perturbing constituency-level vote shares around the SIR-adjusted baseline.
+
+### Seat Distribution (West Bengal Assembly, 294 seats)
+
+| Party | P05 | P10 | Median | P90 | P95 | Min | Max |
+|-------|-----|-----|--------|-----|-----|-----|-----|
+| TMC   | 155 | 158 | 169    | 179 | 182 | 138 | 200 |
+| BJP   | 112 | 115 | 125    | 136 | 139 |  94 | 156 |
+
+### Interpretation
+
+- The **median outcome** suggests:
+  - TMC: ~169 seats  
+  - BJP: ~125 seats  
+
+- The **central uncertainty range (P10–P90)**:
+  - TMC: 158–179  
+  - BJP: 115–139  
+
+- The **tails (Min–Max)** show extreme but low-probability outcomes:
+  - TMC: 138–200  
+  - BJP: 94–156  
+
+### Key Insight
+
+A significant fraction of constituencies are sensitive to small vote-share perturbations, leading to a non-trivial spread in seat outcomes.
+
+For practical interpretation, the **P10–P90 range is the most meaningful uncertainty band**, while Min/Max reflect rare extreme scenarios.
+
+---
+
 ## Next Version (Planned)
 
-- Monte Carlo simulation for uncertainty estimation  
-- Probability of winning per constituency  
-- Seat distribution (confidence intervals)  
 - Improved SIR modeling  
 
 ---
