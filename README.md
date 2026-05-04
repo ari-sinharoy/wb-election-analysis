@@ -16,13 +16,13 @@ Instead of focusing only on prediction, the goal is to:
 
 | Party | Seats |
 |------|------|
-| TMC  | 155 |
-| BJP  | 139 |
+| TMC  | 169 |
+| BJP  | 125 |
 | Others | 0 |
 
-> **42 constituencies have <3% margin → highly sensitive to small changes**
+> **43 constituencies have <3% margin → highly sensitive to small changes**
 
-- TMC vulnerable seats: 22  
+- TMC vulnerable seats: 23  
 - BJP vulnerable seats: 20  
 
 ---
@@ -31,7 +31,7 @@ Instead of focusing only on prediction, the goal is to:
 
 ### Baseline Model (Swing-Based)
 
-Projected Vote Share = Assembly 2021 + Lok Sabha Swing  
+Projected Vote Share = Assembly 2021 + Lok Sabha Swing * 0.5 
 
 Swing = LS 2024 − LS 2019  
 

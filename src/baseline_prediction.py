@@ -236,21 +236,21 @@ df = df.merge(
 
 
 ## vote swing in ls election
-tmc_swing = (LS_result_2024['AITC_votes']/LS_result_2024['electors'] - 
+tmc_swing = 100*(LS_result_2024['AITC_votes']/LS_result_2024['electors'] - 
              LS_result_2019['AITC_votes']/LS_result_2019['electors'])
 
-bjp_swing = (LS_result_2024['BJP_votes']/LS_result_2024['electors'] - 
+bjp_swing = 100*(LS_result_2024['BJP_votes']/LS_result_2024['electors'] - 
              LS_result_2019['BJP_votes']/LS_result_2019['electors'])
 
-left_swing = (LS_result_2024['LF_votes']/LS_result_2024['electors'] - 
+left_swing = 100*(LS_result_2024['LF_votes']/LS_result_2024['electors'] - 
              LS_result_2019['LF_votes']/LS_result_2019['electors'])
 
-congress_swing = (LS_result_2024['INC_votes']/LS_result_2024['electors'] - 
+congress_swing = 100*(LS_result_2024['INC_votes']/LS_result_2024['electors'] - 
              LS_result_2019['INC_votes']/LS_result_2019['electors'])
 
 ls_df = pd.DataFrame({'ls_constituency': LS_result_2024['ls_constituency'],
                       'tmc_swing': tmc_swing, 'bjp_swing': bjp_swing, 
-                      'left_swing': tmc_swing, 'congress_swing': congress_swing, })
+                      'left_swing': left_swing, 'congress_swing': congress_swing, })
 
 df = df.merge(
     ls_df,
@@ -259,10 +259,13 @@ df = df.merge(
 )
 
 
-df['pred_tmc_vote_share'] = df['TMC_vote_share'] + df['tmc_swing'] 
-df['pred_bjp_vote_share'] = df['BJP_vote_share'] + df['bjp_swing'] 
-df['pred_left_vote_share'] = df['Left_vote_share'] + df['left_swing'] 
-df['pred_congress_vote_share'] = df['Congress_vote_share'] + df['congress_swing'] 
+# we will add 50% weight to the lok sabha swing 
+lsmult = 0.5
+
+df['pred_tmc_vote_share'] = df['TMC_vote_share'] + df['tmc_swing']*lsmult 
+df['pred_bjp_vote_share'] = df['BJP_vote_share'] + df['bjp_swing']*lsmult 
+df['pred_left_vote_share'] = df['Left_vote_share'] + df['left_swing']*lsmult 
+df['pred_congress_vote_share'] = df['Congress_vote_share'] + df['congress_swing']*lsmult 
 
 
 ## find baseline winner
@@ -289,6 +292,8 @@ sorted_votes = np.sort(df[vote_cols].values, axis=1)
 df["baseline_margin_pct"] = sorted_votes[:, -1] - sorted_votes[:, -2]
 
 df["is_close_seat"] = df["baseline_margin_pct"] < 3   # threshold: 3%
+
+df.to_csv("data/processed/baseline_predictions.csv", index=False)
 
 # ************************************************************************** #
 # IMPORTANT: ~11.5% voters deleted due to corrections & >5% additional votes
@@ -406,7 +411,6 @@ def apply_sir_and_new_voters(
 
     return df
 
-
 # SIR adjusted verdict 
 df_adj = apply_sir_and_new_voters(df,
                                   sir_reduction_rate=0.115,
@@ -445,6 +449,9 @@ sorted_adj_votes = np.sort(df_adj[adj_vote_cols].values, axis=1)
 df_adj["sir_adjusted_margin_pct"] = (
     sorted_adj_votes[:, -1] - sorted_adj_votes[:, -2]
 )
+
+
+df_adj.to_csv("data/processed/sir_adjusted_predictions.csv", index=False)
 
 # ========================= #
 # Output section
