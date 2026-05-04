@@ -159,9 +159,44 @@ For practical interpretation, the **P10–P90 range is the most meaningful uncer
 
 ---
 
-## Next Version (Planned)
+## An upswing for BJP is predicted by taking into account LS swing between 2014 and 2024 as well as an updated constituency-wise SIR
 
-- Improved SIR modeling  
+- In this version we predicted LS swing -> LS 2024 - LS 2014 vote share
+- Voter deduction of 20% for constituencies with >10% muslim votes; 1% otherwise 
+
+## Key Result (Constituency-wise SIR Adjusted)
+
+| Party    | Seats |
+|----------|-------|
+| BJP      | 177   |
+| TMC      | 116   |
+| Congress | 1     |
+
+> **46 constituencies have <3% margin → highly sensitive to small changes**
+
+- BJP vulnerable seats: 25  
+- TMC vulnerable seats: 21  
+
+## Top 10 closest constituencies (~1%) are
+
+| Constituency     | Predicted Winner |
+|------------------|------------------|
+| Monteswar        | TMC              |
+| Sonarpur Dakshin | TMC              |
+| Khandaghosh      | TMC              |
+| Dum Dum          | TMC              |
+| Dum Dum Uttar    | BJP              |
+| Mandirbazar      | BJP              |
+| Bijpur           | TMC              |
+| Bhatar           | BJP              |      
+| Kumarganj        | BJP              |
+| Pandua           | TMC              |
+
+---
+
+## Next Steps
+
+Include new voters 
 
 ---
 
