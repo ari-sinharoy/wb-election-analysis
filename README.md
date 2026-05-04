@@ -159,7 +159,7 @@ For practical interpretation, the **P10–P90 range is the most meaningful uncer
 
 ---
 
-## An upswing for BJP is predicted by taking into account LS swing between 2014 and 2024 as well as an updated constituency-wise SIR
+## An upswing for BJP is predicted by using a constituency-wise SIR model and using lok sabha vote shares from 2014 -> 2024 for predicting swing
 
 - In this version we predicted LS swing -> LS 2024 - LS 2014 vote share
 - Voter deduction of 20% for constituencies with >10% muslim votes; 1% otherwise 
@@ -169,15 +169,14 @@ For practical interpretation, the **P10–P90 range is the most meaningful uncer
 | Party    | Seats |
 |----------|-------|
 | BJP      | 177   |
-| TMC      | 116   |
-| Congress | 1     |
+| TMC      | 114   |
 
 > **46 constituencies have <3% margin → highly sensitive to small changes**
 
 - BJP vulnerable seats: 25  
 - TMC vulnerable seats: 21  
 
-## Top 10 closest constituencies (~1%) are
+## Top 10 closest constituencies (<1% margin) are
 
 | Constituency     | Predicted Winner |
 |------------------|------------------|
@@ -194,9 +193,29 @@ For practical interpretation, the **P10–P90 range is the most meaningful uncer
 
 ---
 
-## Next Steps
+## Monte Carlo Simulation Results
 
-Include new voters 
+We simulate 10,000 elections by perturbing constituency-level vote shares around the SIR-adjusted baseline.
+
+### Seat Distribution (West Bengal Assembly, 294 seats)
+
+| Party   | P05 | P10 | Median | P90 | P95 | Min | Max |
+|---------|-----|-----|--------|-----|-----|-----|-----|
+| BJP     | 160 | 163 | 177    | 189 | 192 | 147 | 204 |
+| TMC     |  99 | 102 | 114    | 128 | 132 |  87 | 145 |
+| Congress|   1 |   1 |   1    |   2 |   2 |   1 |   2 |
+| Others  |   1 |   1 |   2    |   2 |   2 |   1 |   2 |
+
+### Interpretation
+
+- The **central uncertainty range (P10–P90)**:
+  - BJP: 163–189  
+  - BJP: 102–128  
+
+### Key Insight
+
+- BJP to likely get majority with 170+ seats if both SIR and anti-incumbency factors strongly affect TMC   
+- If SIR is the only key factor, then a TMC government is likely with BJP claiming 120+ seats 
 
 ---
 
