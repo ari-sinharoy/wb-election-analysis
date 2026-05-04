@@ -2,176 +2,142 @@
 
 ## Overview
 
-This project builds a **constituency-level election modeling framework** for the West Bengal Assembly using historical election data.
+This project builds a **constituency-level election modeling framework** for the West Bengal Assembly.
 
-Instead of focusing solely on prediction, the goal is to:
+Instead of focusing only on prediction, the goal is to:
 
-- Identify **key factors influencing electoral outcomes**
+- Identify **key drivers of electoral outcomes**
 - Quantify **uncertainty in close contests**
-- Enable **post-election analysis and attribution**
-
-The framework combines:
-- Historical Assembly result (2021)
-- Lok Sabha swing (2019 → 2024)
-- Scenario-based adjustments (SIR, new voters)
+- Enable **scenario-based and post-election analysis**
 
 ---
 
-## Project Structure
+## Key Result (Baseline Scenario)
 
-- `data/`
-  - `raw/` – original scraped datasets (Wikipedia, ECI)
-  - `processed/` – cleaned and feature-engineered data
-- `notebooks/` – EDA, modeling, analysis
-- `src/` – reusable scripts
+| Party | Seats |
+|------|------|
+| TMC  | 155 |
+| BJP  | 139 |
+| Others | 0 |
+
+> **42 constituencies have <3% margin → highly sensitive to small changes**
+
+- TMC vulnerable seats: 22  
+- BJP vulnerable seats: 20  
 
 ---
 
 ## Methodology
 
-### 1. Baseline Model (Swing-Based)
+### Baseline Model (Swing-Based)
 
-For each assembly constituency \(i\), lok sabha (LS) constituency l, and party \(p\):
+Projected Vote Share = Assembly 2021 + Lok Sabha Swing  
 
-	\[
-		\text{Projected Vote Share}_{i,p} = \text{Assembly 2021}_{i,p} + \text{Swing}_{l,p}
-	\]
+Swing = LS 2024 − LS 2019  
 
-Where:
-
-	\[
-		\text{Swing}_{l,p} = \text{LS 2024}_{l,p} - \text{LS 2019}_{l,p}
-	\]
-
-- Swing is computed at the **LS constituency level**
-- Applied uniformly to all Assembly segments within that LS seat
-
-### 2. Baseline Winner
-
-Winner is defined as:
-
-```text
-party with maximum projected vote share
-
-
-## Scenario Modeling: Voter Roll Changes (SIR) and New Voters
-
-Beyond baseline swing-based projections, this framework incorporates **structural changes in the electorate**, specifically:
-
-- Voter roll corrections (Special Intensive Revision – SIR)
-- Addition of new voters
-
-These factors can materially alter constituency-level outcomes, especially in close contests.
+- Swing is computed at the **Lok Sabha level**
+- Applied to all Assembly segments within that LS seat
 
 ---
 
-### Motivation
+### Winner Prediction
 
-Baseline models assume a stable electorate. However, in practice:
+Winner = party with highest projected vote share  
 
-- A fraction of voters may be removed due to roll corrections  
-- New voters are continuously added (first-time voters, re-registrations, etc.)
+### Margin Definition
 
-These changes are **not neutral**—they can systematically affect different parties.
+Margin = Top vote share − Second highest vote share  
 
----
-
-### Modeling Approach
-
-We convert vote shares into estimated vote counts and then adjust them.
-
-#### Step 1: Convert Vote Share → Votes
-
-\[
-\text{Votes}_{i,p} = \text{Electors}_{i} \times \frac{\text{Vote Share}_{i,p}}{100}
-\]
-
-Where:
-- \(i\): constituency  
-- \(p\): party  
+| Category | Margin |
+|--------|--------|
+| Safe | >5% |
+| Leaning | 3–5% |
+| Close | <3% |
 
 ---
 
-#### Step 2: Apply Voter Removal (SIR)
+## Scenario Modeling: Voter Roll Changes (SIR)
 
-Total voters removed:
+This model incorporates structural electoral changes:
 
-\[
-\text{Removed Total}_{i} = \text{Electors}_{i} \times r_{\text{SIR}}
-\]
-
-Where:
-- \(r_{\text{SIR}}\) ≈ 11.5% (scenario parameter)
-
-Removed voters are distributed across parties based on:
-
-\[
-\text{Removed}_{i,p} \propto \text{Votes}_{i,p} \times w^{\text{SIR}}_{p}
-\]
-
-Where:
-- \(w^{\text{SIR}}_{p}\): party-specific impact weight
+- ~11.5% voter deletion (roll correction)
+- ~6% new voter 
 
 ---
 
-#### Step 3: Add New Voters
+### Modeling Logic
 
-Total new voters:
+Step 1: Votes = Electors × Vote Share  
 
-\[
-\text{New Total}_{i} = \text{Electors}_{i} \times r_{\text{new}}
-\]
+Step 2: Removed voters ∝ party vote base × SIR weight  
 
-New votes are allocated based on assumed preference:
+Step 3: New votes distributed by assumed preference  
 
-\[
-\text{New Votes}_{i,p} = \text{New Total}_{i} \times w^{\text{new}}_{p}
-\]
+Step 4: Adjusted Votes = Old Votes − Removed + New  
 
-Where:
-- \(w^{\text{new}}_{p}\): party preference weights for new voters
+Step 5: Adjusted Vote Share = Adjusted Votes / Total Votes  
 
 ---
 
-#### Step 4: Adjust Vote Counts
+### Scenario Assumptions (Current Run)
 
-\[
-\text{Adjusted Votes}_{i,p}
-=
-\text{Votes}_{i,p}
-- \text{Removed}_{i,p}
-+ \text{New Votes}_{i,p}
-\]
+**Voter deletion (11.5%) weights:**
+
+| Party | Weight |
+|------|--------|
+| TMC | 1.0 |
+| BJP | 0.2 |
+| Left | 1.0 |
+| Congress | 1.0 |
+
+**New voter distribution (6%):**
+
+| Party | Share |
+|------|-------|
+| TMC | 35% |
+| BJP | 35% |
+| Left | 15% |
+| Congress | 15% |
 
 ---
 
-#### Step 5: Convert Back to Vote Share
+## Project Structure
 
-\[
-\text{Adjusted Vote Share}_{i,p}
-=
-\frac{\text{Adjusted Votes}_{i,p}}{\sum_p \text{Adjusted Votes}_{i,p}} \times 100
-\]
+```
+data/
+├── raw/
+├── processed/
+
+src/
+├── clean_wiki_results.py
+├── baseline_prediction.py
+
+notebooks/
+```
 
 ---
 
-### Scenario Parameters
+## Key Insights
 
-The model allows flexible assumptions:
+- Many constituencies have **very low margins (<3%)**
+- Small shifts in vote share can flip multiple seats
+- Structural changes (SIR, turnout) can significantly impact outcomes
+- Deterministic predictions are insufficient → uncertainty modeling is required
 
-#### 1. Voter Removal Rate
-```text
-r_SIR ≈ 11–12%
+---
 
+## Next Version (Planned)
 
-## Example Output 
+- Monte Carlo simulation for uncertainty estimation  
+- Probability of winning per constituency  
+- Seat distribution (confidence intervals)  
+- Improved SIR modeling  
 
-#### Parameters used:
- - Effect of 11.5% old voter deletion (TMC:1.0, BJP:0.2, Left: 1.0, Congress: 1.0)
- - New voter (6%) distribution (TMC: 35%, BJP: 35%, Left: 15%, Congress: 15%)
+---
 
-TMC: 155 seats
-BJP: 139 seats
-Others: 0 seats
+## Tech Stack
 
-With 42 vulnerable seats with <3% margin (TMC: 22, BJP: 20)
+- Python
+- Pandas / NumPy
+
+---
